@@ -1,0 +1,10 @@
+<!--END CHANGEABLE CONTENT.-->
+	</div><!--content-->
+	<div id="footer">
+		<p itemscope itemtype="http://data-vocabulary.org/Person"> &#169; 2012 Janaka Seneviratne <a href="http://www.janakaw.com" itemprop="url">www.janakaw.com</a> Theme by <a href="http://www.sixshootermedia.com">Six Shooter Media</a>.&copy; 2011</p>
+	</div><!--footer-->
+</div><!-- wrapper -->
+</body>
+<?php 
+ob_end_flush();
+?>
