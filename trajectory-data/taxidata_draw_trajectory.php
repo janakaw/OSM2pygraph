@@ -7,7 +7,19 @@ if($_SESSION['loggedintaxi']!='yes')
 print( '<!DOCTYPE html>
 <html>
   <head>
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <!-- POPUP -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+  <script>
+    var $j = jQuery.noConflict();
+    </script>
+    <style type="text/css">
+    .no-close .ui-dialog-titlebar-close {
+  display: none;
+}
+    </style>
+    <!--/POPUP-->
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <style type="text/css">
       html { height: 100% }
@@ -18,14 +30,44 @@ print( '<!DOCTYPE html>
       src="http://maps.googleapis.com/maps/api/js?key=AIzaSyD29y39LDdNheGcYB5vMEMq2xGS19z8dEI&sensor=false">
     </script>
     <script type="text/javascript">
+    var range_left = 0;
+      var range_right = 0;
+      var in_data = "";
+            
+      
 	function initialize() {
+	
+	//-----------------------
+	
+	
+	$j( "#dialog" ).dialog({ autoOpen: false });
+	
+		$j( "#dialog" ).dialog({
+  dialogClass: "no-close",
+  buttons: [
+    {
+      text: "Submit",
+      click: function() {
+        $j("#dialog" ).dialog( "close" );
+      }
+    }
+  ]
+});
+	
+	$j( "#dialog" ).on( "custom_dialogclose", function( event, ui ) {on_user_traj_next();} );
+	$j( "#dialog" ).dialog({
+   close : function( event, ui ) {range_left = document.getElementById("left").value; 
+  range_right = document.getElementById("right").value; 
+  $j( "#dialog").trigger( "custom_dialogclose", [ "Custom", "Event" ] );
+ } });
+	//--------------------------
 		var myLatLng; ');
 
 if($_REQUEST['dir']!="")
 	print_centre();
 
 print('var mapOptions = {
-          zoom: 12,
+          zoom: 10,
           center: myLatLng,
           mapTypeId: google.maps.MapTypeId.TERRAIN
         };
@@ -76,7 +118,7 @@ if($_REQUEST['dir']!="")
 		//--------JQuery post-------------
 		var url_jquery = "taxidrive_trajectory_list_sql.php";
 		document.body.style.cursor  = \'wait\'; 
-		$.post(url_jquery,{dir: escape(date_id)},
+		$j.post(url_jquery,{dir: escape(date_id)},
 		 function(data){
 		 	on_traj_list(data);
 		})
@@ -155,16 +197,57 @@ if($_REQUEST['dir']!="")
 		//--------JQuery post-------------
 		var url_jquery = "taxidrive_trajectory_points_sql.php";
 		document.body.style.cursor  = \'wait\'; 
-		$.post(url_jquery,{dir: escape(dir_id), trajectory: escape(trajectory_id)},
+		$j.post(url_jquery,{dir: escape(dir_id), trajectory: escape(trajectory_id)},
 		 function(data){
 		 	on_user_traj(data);
 		})
 
 		
 	      }
+	      
+	      
+	      //-----------------
+	      
+	       function on_user_traj(data){
+	      document.body.style.cursor  = \'default\'; 
+
+			var points_and_dis = data.split(" ");
+			var total_distance = points_and_dis[0];
+			var pointArray = points_and_dis[1].split(":");
+			var start_str = pointArray[0];
+			var start_pt = start_str.split(",");
+			
+			var x; 
+			var len = pointArray.length;
+			var mid = Math.round(len/2);
+			
+			$j( "#dialog" ).dialog({ modal: true });
+
+			
+			var right_point_count_sub_field_id = document.getElementById(\'right\');
+			right_point_count_sub_field_id.value = len.toString();
+			var left_point_count_sub_field_id = document.getElementById(\'left\');
+			left_point_count_sub_field_id.value = "0";
+			in_data = data;
+				
+			 $j(function() {
+    $j( "#dialog" ).dialog("open");
+  });
+			
+			
+			
+		}
+	      
+	      //------------------------
 
 	
-		function on_user_traj(data){
+		function on_user_traj_next(){
+
+			data = in_data;
+			
+			left = range_left;
+			right = range_right;
+
 			
 			document.body.style.cursor  = \'default\'; 
 
@@ -177,7 +260,9 @@ if($_REQUEST['dir']!="")
 			var x; 
 			var len = pointArray.length;
 			var mid = Math.round(len/2);
-	
+			
+			//------------------------------
+			
 			
 			//---------------------------------
 			var distance_div_id = document.getElementById(\'dis\');
@@ -189,25 +274,33 @@ if($_REQUEST['dir']!="")
 			var distance_field_id = document.createElement(\'label\');
 			distance_field_id.setAttribute(\'id\',\'dis_val\');
 			var str1 = "distance:";
-			distance_field_id.innerHTML = str1.concat(total_distance.toString()).concat(": points:").concat(pointArray.length.toString());
-	
-			distance_div_id.appendChild(distance_field_id);
+			
+			
+			var mypt_ct = 0;
 			//---------------------------------
 			var flightPlanCoordinates = [];
 			for(x in pointArray){
+				
+			        if (parseInt(x,10)> parseInt(left,10) && parseInt(x,10)<parseInt(right,10)){
+			        				        mypt_ct += 1;
+			        
 				var coord = pointArray[x].split(",");
 				var point = new google.maps.LatLng((parseFloat(coord[0])+0.0013).toString(), (parseFloat(coord[1])+0.0061).toString());
-				flightPlanCoordinates.push(point);
+				flightPlanCoordinates.push(point); }
 			}
 			
 			var mid_str=pointArray[mid];
 			var mid_pt = mid_str.split(",");
 		        var myLatLng = new google.maps.LatLng((parseFloat(mid_pt[0])+0.0013).toString(), (parseFloat(mid_pt[1])+0.0061).toString());
 	        	var mapOptions = {
-	          		zoom: 15,
+	          		zoom: 10,
 			        center: myLatLng,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 	        	};
+	        	
+	        	distance_field_id.innerHTML = str1.concat(total_distance.toString()).concat(": points:").concat(mypt_ct.toString());
+	
+			distance_div_id.appendChild(distance_field_id);
 	
 	        	var map = new google.maps.Map(document.getElementById(\'map_canvas\'), mapOptions);
 	        	
@@ -269,6 +362,14 @@ if($_REQUEST['dir']!="")
 print_dir_list();
 
 print('</div></td><td><div id="tl"></div></td><td><div id="dis"><label id="dis_val">Pick a user...</label></div></td><td><div id="speeds"></div></td><td><div id="distance"></div></td><td><div id="time"></div></td></tr></table></form>
+<div id="dialog" title="Enter Range" >
+<form>
+  <label id="pt_count">
+  <p>Range</p>
+  <input type="text" id="left" />
+  <input type="text" id="right" />
+  </form>
+</div>
 <div id="map_canvas" style="width:100%; height:100%"></div>
   </body>
 </html>');
