@@ -1,4 +1,9 @@
-<?php //logingeo.php
+<?php 
+/**
+ *
+ * @author     Janaka Seneviratne
+ * @copyright  2014 Janaka Seneviratne
+ */
 define('TITLE', 'Login to view geolife trajectories');
 include('templates/header.html');
 

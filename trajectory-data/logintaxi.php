@@ -1,4 +1,9 @@
-<?php //logintaxi.php
+<?php 
+/**
+ *
+ * @author     Janaka Seneviratne
+ * @copyright  2014 Janaka Seneviratne
+ */
 define('TITLE', 'Login to view taxidata trajectories');
 include('templates/header.html');
 

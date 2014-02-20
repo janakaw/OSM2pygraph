@@ -1,4 +1,10 @@
 <?php 
+/**
+ *
+ * @author     Janaka Seneviratne
+ * @copyright  2014 Janaka Seneviratne
+ * @version    CVS: $Id:$
+ */
 ob_start();
 session_start();
 if($_SESSION['iloggedin']!='yes')

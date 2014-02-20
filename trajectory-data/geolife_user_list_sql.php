@@ -1,6 +1,9 @@
-<?php //index.php
-/* This is the home page for this site. It uses templates to create the layout. */
-
+<?php 
+/**
+ *
+ * @author     Janaka Seneviratne
+ * @copyright  2014 Janaka Seneviratne
+ */
 echo print_user_list();
 
 function print_user_list(){

@@ -1,5 +1,9 @@
 <?php 
-
+/**
+ *
+ * @author     Janaka Seneviratne
+ * @copyright  2014 Janaka Seneviratne
+ */
 print( '<!DOCTYPE html>
 <html>
   <head>

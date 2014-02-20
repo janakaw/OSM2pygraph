@@ -1,4 +1,9 @@
-<?php // books.php
+<?php 
+/**
+ *
+ * @author     Janaka Seneviratne
+ * @copyright  2014 Janaka Seneviratne
+ */
 define ('TITLE', 'Books I read recently');
 include('templates/header.html');
 ?>

@@ -1,6 +1,10 @@
 <?php 
+/**
+ *
+ * @author     Janaka Seneviratne
+ * @copyright  2014 Janaka Seneviratne
+ */
 session_start();
-
 $lat_array=array();
 $lon_array=array();
 $time_array=array();

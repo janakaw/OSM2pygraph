@@ -1,6 +1,12 @@
 <?php 
+/**
+ *
+ * @author     Janaka Seneviratne
+ * @copyright  2014 Janaka Seneviratne
+ */
 ob_start();
 session_start();
+
 if($_SESSION['loggedintaxi']!='yes')
 	header('Location: logintaxi.php');
 

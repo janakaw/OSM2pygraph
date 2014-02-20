@@ -1,9 +1,9 @@
-<?php //index.php
-/* This is the home page for this site. It uses templates to create the layout. */
-
-
-
-//$ret_string = get_centre();
+<?php 
+/**
+ *
+ * @author     Janaka Seneviratne
+ * @copyright  2014 Janaka Seneviratne
+ */
 
 $str = get_point_array();
 

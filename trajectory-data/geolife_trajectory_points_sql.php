@@ -1,7 +1,9 @@
-<?php //index.php
-/* This is the home page for this site. It uses templates to create the layout. */
-
-
+<?php 
+/**
+ *
+ * @author     Janaka Seneviratne
+ * @copyright  2014 Janaka Seneviratne
+ */
 
 //$ret_string = get_centre();
 
