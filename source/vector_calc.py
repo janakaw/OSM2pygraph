@@ -1,3 +1,11 @@
+""" vector_calc.py """
+__author__ = "Janaka Seneviratne"
+__copyright__ = "Copyright 2014, Janaka Seneviratne"
+__version__ = "0.0.1"
+__maintainer__ = "Janaka Seneviratne"
+__email__ = "janaka.seneviratne@gmail.com"
+__status__ = "tested"
+
 from numpy import power as pow, finfo, double
 from numpy import degrees, radians, mat, cos, sin, arctan, sqrt, pi, arctan2 
 import scipy
