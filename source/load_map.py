@@ -1,3 +1,11 @@
+""" load map.py """
+__author__ = "Janaka Seneviratne"
+__copyright__ = "Copyright 2014, Janaka Seneviratne"
+__version__ = "0.0.1"
+__maintainer__ = "Janaka Seneviratne"
+__email__ = "janaka.seneviratne@gmail.com"
+__status__ = "tested"
+
 import sys
 import xml.etree.ElementTree as ET
 
