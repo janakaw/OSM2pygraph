@@ -1,23 +1,16 @@
-""" map_match.py: obtains m-nearest edges for each sample point on a user trajectory (taxidata),
-    serialize, map graph for better performance """
-__author__ = "Janaka Seneviratne"
-__copyright__ = "Copyright 2014, Janaka Seneviratne"
-__version__ = "0.0.1"
-__maintainer__ = "Janaka Seneviratne"
-__email__ = "janaka.seneviratne@gmail.com"
-__status__ = "tested"
-
 import os, sys
 import xml.etree.ElementTree as ET
 import numpy  
 from rtree import index
 import pprint
+#from sPickle import *
 import pickle
 import time
 import calendar
 import pylab
 
 
+#--------
 from vector_calc import *
 from load_map import *
 from forest_m_candidate import *
@@ -185,7 +178,7 @@ def print_edge_array(path_log, edge_array, node_lat_array, node_lon_array, edge_
     path_log.close()
 
 def print_node_array_geodetic(node_array_geodetic):
-    path_log = open("/path/matched_path_geo.txt",'w')
+    path_log = open("C:\\Users\\Janaka\\Dropbox\\Research\\OSM\\OSM\\logs\\matched_path_geo.txt",'w')
     
     for node_geo in node_array_geodetic:
         path_log.write(node_geo);
@@ -197,6 +190,22 @@ def remove_duplicates(edge_list):
     count = 0
     f = 0
     for i in edge_list:
+        '''if count == 0:
+            count = 1
+            f=1
+            prev = i.strip()
+            continue
+        cur = i.strip()
+        if cur == prev:
+            f = f + 1
+            continue
+        else:
+            #can have a better matric based on edge length points/unit length
+            if f>0:
+                edge_list_no_duplicates.append(prev);
+                print(prev + ":" + str(f))
+            f = 1 
+            prev = cur'''
         edge_list_no_duplicates.append(i.strip());
     
     #print(prev + ":" + str(f))
@@ -279,7 +288,49 @@ def link_edges(edge_list, node_lat_array, node_lon_array):
             temp_list.append(prev_ends[1][0]+","+prev_ends[1][1]+"\n")
             start_flag = 1
             
-                          
+            '''if prev_common_end == -1:
+                print "no prev common end"
+                continue
+            e1 = convert_edge_to_ECEF(prev, node_lat_array, node_lon_array)
+            e2 = convert_edge_to_ECEF(cur, node_lat_array, node_lon_array)
+
+            d2 = get_mag(e1[(prev_common_end+1)%2],e2[0])
+            d3 = get_mag(e1[(prev_common_end+1)%2],e2[1])
+
+            if d2 < d3:
+                common_end = 0
+            else:
+                common_end = 1
+                d2 = d3
+
+            path_node_list.append(prev_ends[(prev_common_end+1)%2][0]+","+prev_ends[(prev_common_end+1)%2][1]+"\n")
+            path_node_list.append(cur_ends[common_end][0]+","+cur_ends[common_end][1]+"\n")
+
+            prev_common_end = common_end '''
+            #inter_sect = line_line_intersection(e1[0],e1[1],e2[0],e2[1])
+
+            '''if len(inter_sect) == 0:
+                path_node_list.append(prev_ends[(end1+1)%2][0]+","+prev_ends[(end1+1)%2][1]+"\n")
+                path_node_list.append(prev_ends[end1][0]+","+prev_ends[end1][1]+"\n")
+                path_node_list.append(cur_ends[(end2+1)%2][0]+","+cur_ends[(end2+1)%2][1]+"\n")
+                print "no intersect" + str(start_flag)
+                #return path_node_list
+            else:
+                [p1, p2, mua, mub] = inter_sect
+                # shortest distance between the two edges 
+                d = get_mag(p1,p2)
+                print "d: " + str(d) + ":" + str(start_flag)
+                # if distance between two edges is less than
+                # 200m append verticle segment p1,p2 to
+                # list, v1 or v2 (part of prevedge) is already in the list
+                # 
+                if d < 50:
+                    [lat, lon] = ecef2geodetic(p1[0], p1[1], p1[2])
+                    path_node_list.append(str(lat)+","+str(lon)+"\n")
+                    [lat, lon] = ecef2geodetic(p2[0], p2[1], p2[2])
+                    path_node_list.append(str(lat)+","+str(lon)+"\n")'''
+                       
+                
             
         
     path_node_list.append(temp_list)
@@ -287,7 +338,7 @@ def link_edges(edge_list, node_lat_array, node_lon_array):
     count1 = 0
     for l in path_node_list:
         count1 = count1 + 1
-        path_log = open("/home/pathto" + str(count1) + ".txt",'w')
+        path_log = open("C:\\Users\\Janaka\\Dropbox\\Research\\OSM\\OSM\\logs\\matched_path_geo_" + str(count1) + ".txt",'w')
         for node_geo in l:
             path_log.write(node_geo);
         path_log.close()
@@ -461,15 +512,12 @@ def map_match():
     
     node_obj_list = {}
             
-    """ Create data structures from scratch """
+    # load data structures from scratch
     #create_and_serialize_data_structures(node_lat_array, node_lon_array, node_list,
     #      adj_list, node_way, edge_count, edge_tags, node_vector, edge_list, inv_edge_list, gr);
 
-    """ Serialize all structures """
     #serialize_all(node_lat_array, node_lon_array, node_list,
     #      adj_list, node_way, edge_count, edge_tags, node_vector, edge_list, inv_edge_list, gr1);
-
-    """ Load data structures"""
     [node_lat_array, node_lon_array, node_list,
           adj_list, node_way, edge_count, edge_tags, node_vector, edge_list, inv_edge_list, gr] = load_all()
 
@@ -489,9 +537,20 @@ def map_match():
     p.dimension = 3
     edge_index_3d = index.Rtree('edge_index_3d_beijing',properties=p)
 
-       
+    #inpath = "C:\Users\janakaw\Dropbox\Research\geolife-osm-labs\OSM\logs\\004-trajs.txt"
+    #path = 'C:\Users\Janaka\Dropbox\Research\OSM\OSM\logs\paths-taxi-01-mapped\\'
+    #path = 'C:\Users\janakaw\Dropbox\Research\geolife-osm-labs\OSM\logs\paths-004-mapped-trial\\'
+
+
+    
+
+    
+        
+
+
+    
     forest_count = 0
-    traj_path_root = '/home/user/traj_path/'
+    traj_path_root = 'C:\\taxidata\\01_part\\'
 
     #init forest
     f = Forest(node_lat_array, node_lon_array, gr)
@@ -534,15 +593,58 @@ def map_match():
             cur_edge_list = []
             cur_edge_obj_list = {}
             
-
+            # 5 neighbours considered to handle complex intersections
             c1 = 0
-            
+            #edge_index_3d.insert(int(500000),(p[0],p[1],p[2],p[0],p[1],p[2]), obj=500000)
+            #print("len:" + str(count(edge_index_3d.nearest((p[0],p[1],p[2],p[0],p[1],p[2]),3))))
+            #print("#######")
+            #for n in edge_index_3d.nearest((0,0,0, 200,200,200),5):
+
             cur_edge_obj_list = find_nn(p, 1, cur_edge_list, cur_edge_obj_list, edge_obj_list, edge_list, c1, edge_index_3d, gr, node_lat_array, node_lon_array)
                 
-            
+            '''for n in edge_index_3d.nearest((p[0],p[1],p[2],p[0],p[1],p[2]),12):
+            #for n in edge_index_3d.intersection((str(int(p[0])- 100),str(int(p[1])-100),str(int(p[2])-100),str(int(p[0])+100),str(int(p[1])+100),str(int(p[2])+100)), objects=True):
+
+                
+                exist = False
+
+                #avoid repeating edges
+                if c1 == 0:
+                    cur_edge_list.append(n)
+                else:
+                    for n1 in cur_edge_list:
+                        if str(n1) == str(n):
+                            exist = True
+                            break;
+                    if exist:
+                        continue;
+                    cur_edge_list.append(n)
+                
+                edge = edge_obj_list[int(str(n))]
+                wt = gr.edge_weight(edge)
+                e = Edge(int(edge[0]),int(edge[1]),-1,-1, -1, "-1", -1, "-1", "-1", "-1", "-1")
+                attr_list = edge_list[e.edge_label_str][1]
+                
+                #print(n)
+                
+                #if wt > 0.0001:
+                    
+                way_id = int(attr_list["way_id"])
+                way_type = str(attr_list["way_type"])
+                road_name = str(attr_list["name"].encode('utf-8'))
+                name_en = str(attr_list["name_en"].encode('utf-8'))
+                lanes = str(attr_list["lanes"].encode('utf-8'))
+                oneway = str(attr_list["oneway"].encode('utf-8'))
+
+                edge_forest = Edge(int(edge[0]),int(edge[1]), 1 , wt, way_id, way_type, p[3], road_name, name_en, lanes, oneway)
+                cur_edge_obj_list[c1] = edge_forest
+                c1 = c1 + 1'''
                 
             if len(cur_edge_obj_list) > 5:
-                 f.insert_forest(p, cur_edge_obj_list)#[0], cur_edge_obj_list[1], cur_edge_obj_list[2])
+                #print(len(cur_edge_obj_list))
+                f.insert_forest(p, cur_edge_obj_list)#[0], cur_edge_obj_list[1], cur_edge_obj_list[2])
+        #print("edge count:" + str(tc))
+        #print("edge count distinct:" + str(ttc))
         
         c=0
 

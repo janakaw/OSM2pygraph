@@ -1,12 +1,3 @@
-""" load_map.py: loads an OpenStreetMap in XML format and creates the corresponding graph,
-    also creates an R-tree index for edges and nodes """
-__author__ = "Janaka Seneviratne"
-__copyright__ = "Copyright 2014, Janaka Seneviratne"
-__version__ = "0.0.1"
-__maintainer__ = "Janaka Seneviratne"
-__email__ = "janaka.seneviratne@gmail.com"
-__status__ = "example"
-
 import sys
 import xml.etree.ElementTree as ET
 
@@ -85,6 +76,9 @@ def fill_node_vector(node_lat_array, node_lon_array, node_vector, gr):
 # existing rtree is deleted
 def create_node_rtree(node_vector, file_name):
 
+        p = index.Property()
+        p.dimension = 3
+        p.overwrite = True
         node_index_3d = index.Rtree('node_index_3d_'+file_name,properties=p)
 
         for node_id in node_vector.keys():
@@ -305,11 +299,16 @@ def get_ways(map_root_osm, node_way, adj_list, edge_count, edge_tags, edge_list,
 
 def create_edge_rtree(edge_list, file_name, node_vector):
 
+        p = index.Property()
+        p.dimension = 3
+        p.overwrite = True
         edge_index_3d = index.Rtree('edge_index_3d_'+file_name,properties=p)
 
         for edge_id in edge_list:
                 [end0, end1] = edge_id.split(',')
-                               
+                mbr_min = np.minimum(node_vector[end0], node_vector[end1])
+                mbr_max = np.maximum(node_vector[end0], node_vector[end1])
+                
                 edge_index_3d.insert(edge_list[edge_id][0],(mbr_min[0], mbr_min[1], mbr_min[2],
                                               mbr_max[0], mbr_max[1], mbr_max[2]))    
 
@@ -317,6 +316,9 @@ def create_edge_rtree(edge_list, file_name, node_vector):
 
 def create_edge_rtree_graph(gr, file_name, node_vector, edge_list):
 
+        p = index.Property()
+        p.dimension = 3
+        p.overwrite = True
         edge_index_3d = index.Rtree('edge_index_3d_'+file_name,properties=p)
         
         for edge in gr.edges():
@@ -326,6 +328,8 @@ def create_edge_rtree_graph(gr, file_name, node_vector, edge_list):
                 #e_attrs = gr.edge_attributes(edge)
                 
                 if at0[0][1]=="y" and at1[0][1] == "y":
+                        mbr_min = np.minimum(node_vector[str(edge[0])], node_vector[str(edge[1])])
+                        mbr_max = np.maximum(node_vector[str(edge[0])], node_vector[str(edge[1])])
                         edge_index_3d.insert(int(edge_list[e.edge_label_str][0]),(mbr_min[0], mbr_min[1], mbr_min[2], mbr_max[0], mbr_max[1], mbr_max[2]),int(edge_list[e.edge_label_str][0]))    
 
         print "edge tree created"  
