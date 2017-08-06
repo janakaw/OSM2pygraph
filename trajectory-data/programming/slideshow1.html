@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<?php
+	ini_set('display_errors',1);
+	error_reporting(E_ALL | E_STRICT);
+	?>
+	<title><?php 
+	if (defined('TITLE')) {
+		print TITLE;
+	} else {
+		print 'My Home Page !';
+	}
+	?></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="shortcut icon" href="logo.ico" />
+	<link rel="stylesheet" href="css/1.css" type="text/css" media="screen,projection" />
+
+
+	<script language="JavaScript1.1">
+	<!--
+
+	/*
+	JavaScript Image slideshow:
+	By JavaScript Kit (www.javascriptkit.com)
+	Over 200+ free JavaScript here!
+	*/
+
+	var slideimages=new Array()
+	var slidelinks=new Array()
+	function slideshowimages(){
+	for (i=0;i<slideshowimages.arguments.length;i++){
+	slideimages[i]=new Image()
+	slideimages[i].src=slideshowimages.arguments[i]
+	}
+	}
+
+	function slideshowlinks(){
+	for (i=0;i<slideshowlinks.arguments.length;i++)
+	slidelinks[i]=slideshowlinks.arguments[i]
+	}
+
+	function gotoshow(){
+	if (!window.winslide||winslide.closed)
+	winslide=window.open(slidelinks[whichlink])
+	else
+	winslide.location=slidelinks[whichlink]
+	winslide.focus()
+	}
+
+	//-->
+	</script>
+
+</head>
+
+<body>
+<div id="wrapper">
+	<div id="header">
+		<p class="description"><!-- Facebook Badge START --><a href="http://www.facebook.com/janaka.seneviratne" target="_TOP" style="font-family: &quot;lucida grande&quot;,tahoma,verdana,arial,sans-serif; font-size: 11px; font-variant: normal; font-style: normal; font-weight: normal; color: #3B5998; text-decoration: none;" title="Janaka Seneviratne">Facebook</a><!-- Facebook Badge END --></p><p><a href="http://www.facebook.com/janaka.seneviratne" target="_TOP" style="font-family: &quot;lucida grande&quot;,tahoma,verdana,arial,sans-serif; font-size: 11px; font-variant: normal; font-style: normal; font-weight: normal; color: #FFFFFF; text-decoration: none;" title="Janaka Seneviratne">janakaw</a></p>
+		<h3>Janaka Seneviratne</h3>
+		<ul id="nav">
+			<li><a href="index.php">Home</a></li>
+			<li><a href="books.php">My Library</a></li>
+			<li><a href="http://au.linkedin.com/in/janakaseneviratne">LinkedIn</a></li>
+			<li><a href="research.php">Research</a></li>
+			<li><a href="programming.php">Programming</a></li>
+		</ul>
+	</div><!-- header -->
+	<div id="sidebar">
+		<h2>About Me</h2>
+		<p class="me">I am a Phd student in the depatment of Computing and Information Systemes at the University of Melbourne.</p>
+		<p class="me">Date & time at Melbourne</p>
+		<p class="me"><?php //Print current date and time...
+		//Set the time zone:
+		date_default_timezone_set('Australia/Melbourne');
+		//Now print the date and time:
+		print date('g:i a l F j');
+		?></p>
+		</div><!--sidebar-->
+	<div id="content">
+	<!--BEGIN CHANGEABLE CONTENT.-->
+
+
+	<a href="javascript:gotoshow()"><img src="food1.jpg" name="slide" border=0 width=300 height=375></a>
+	<script>
+	<!--
+
+	//configure the paths of the images, plus corresponding target links
+	slideshowimages("food1.jpg","food2.jpg","food3.jpg","food4.jpg","food5.jpg")
+	slideshowlinks("http://food.epicurious.com/run/recipe/view?id=13285","http://food.epicurious.com/run/recipe/view?id=10092","http://food.epicurious.com/run/recipe/view?id=100975","http://food.epicurious.com/run/recipe/view?id=2876","http://food.epicurious.com/run/recipe/view?id=20010")
+
+	//configure the speed of the slideshow, in miliseconds
+	var slideshowspeed=2000
+
+	var whichlink=0
+	var whichimage=0
+	function slideit(){
+	if (!document.images)
+	return document.images.slide.src=slideimages[whichimage].src
+	whichlink=whichimage
+	if (whichimage<slideimages.length-1)
+	whichimage++
+	else
+	whichimage=0
+	setTimeout("slideit()",slideshowspeed)
+	}
+	slideit()
+
+	//-->
+	</script>
+	<p align="center"><font face="arial" size="-2">This free script provided by</font><br>
+	<font face="arial, helvetica" size="-2"><a href="http://javascriptkit.com">JavaScript
+	Kit</a></font></p>
+
+
+
+
+	<!--END CHANGEABLE CONTENT.-->
+	</div><!--content-->
+	<div id="footer">
+		<p>&#169; 2012 Janaka Seneviratne<a href="http://www.sixshootermedia.com">Six Shooter Media</a>.</p>
+		<p>&copy; 2011</p>
+	</div><!--footer-->
+</div><!-- wrapper -->
+</body>
+
+

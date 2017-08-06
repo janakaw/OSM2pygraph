@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+   <url>
+
+      <loc>http://www.janakaw.com/index.php</loc>
+
+      <lastmod>2012-09-09</lastmod>
+
+      <changefreq>monthly</changefreq>
+
+      <priority>0.8</priority>
+
+   </url>
+
+   <url>
+
+      <loc>http://www.janakaw.com/research.php</loc>
+
+      <lastmod>2012-09-09</lastmod>
+
+      <changefreq>monthly</changefreq>
+
+   </url>
+
+   <url>
+
+      <loc>http://www.janakaw.com/programming.php</loc>
+
+      <lastmod>2012-09-09</lastmod>
+
+      <changefreq>monthly</changefreq>
+
+   </url>
+
+   <url>
+
+      <loc>http://janakaw.com/books.php</loc>
+
+      <lastmod>2012-09-09</lastmod>
+
+      <changefreq>monthly</changefreq>
+
+   </url>
+
+</urlset>
+
+
